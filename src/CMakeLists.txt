@@ -76,12 +76,36 @@ endif()
 
 # Build bundles for MacOSX
 if(APPLE)
-  add_custom_command(TARGET quasselclient POST_BUILD
-                     COMMAND ${CMAKE_SOURCE_DIR}/scripts/build/macosx_makebundle.py
-                             ${CMAKE_SOURCE_DIR} "Quassel Client" ../quasselclient)
-  add_custom_command(TARGET quassel POST_BUILD
-                     COMMAND ${CMAKE_SOURCE_DIR}/scripts/build/macosx_makebundle.py
-                             ${CMAKE_SOURCE_DIR} "Quassel" ../quassel)
+  # quasselclient.app
+  # Iconset must be part of target sources to be automatically installed as a resource
+  target_sources(quasselclient
+    PUBLIC ${CMAKE_BINARY_DIR}/pics/quassel.icns)
+
+  set_target_properties(quasselclient PROPERTIES
+    MACOSX_BUNDLE TRUE
+    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/scripts/build/Info.plist.in
+    MACOSX_BUNDLE_BUNDLE_NAME "Quassel IRC Client"
+    MACOSX_BUNDLE_BUNDLE_VERSION ${GIT_DESCRIBE}
+    MACOSX_BUNDLE_IDENTIFIER org.quassel-irc.client
+    MACOSX_BUNDLE_ICON_FILE quassel.icns
+    RESOURCE ${CMAKE_BINARY_DIR}/pics/quassel.icns
+    )
+
+  # quassel.app
+  # Iconset must be part of target sources to be automatically installed as a resource
+  target_sources(quassel
+    PUBLIC ${CMAKE_BINARY_DIR}/pics/quassel.icns)
+
+  set_target_properties(quassel PROPERTIES
+    MACOSX_BUNDLE TRUE
+    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/scripts/build/Info.plist.in
+    MACOSX_BUNDLE_BUNDLE_NAME "Quassel IRC"
+    MACOSX_BUNDLE_BUNDLE_VERSION ${GIT_DESCRIBE}
+    MACOSX_BUNDLE_IDENTIFIER org.quassel-irc.client
+    MACOSX_BUNDLE_ICON_FILE quassel.icns
+    RESOURCE ${CMAKE_BINARY_DIR}/pics/quassel.icns
+    )
+
   if(DEPLOY)
     add_custom_command(TARGET quasselclient POST_BUILD
                        COMMAND ${CMAKE_SOURCE_DIR}/scripts/build/macosx_makePackage.sh Client .. qsvgicon)

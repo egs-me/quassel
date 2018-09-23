@@ -15,6 +15,12 @@ if(WIN32)
   endif()
 endif()
 
+if (APPLE)
+  file(GLOB IconFiles RELATIVE  ${CMAKE_CURRENT_SOURCE_DIR} iconset/*)
+  file(COPY ${IconFiles} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/quassel.iconset)
+  execute_process(COMMAND iconutil -c icns ${CMAKE_CURRENT_BINARY_DIR}/quassel.iconset)
+endif()
+
 if(WANT_MONO OR WANT_QTCLIENT)
   if(EMBED_DATA)
     set(CLIENT_RCS ${CLIENT_RCS} ${CMAKE_CURRENT_SOURCE_DIR}/pics.qrc PARENT_SCOPE)
